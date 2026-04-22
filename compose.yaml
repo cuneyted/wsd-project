@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: wsd_db
+    environment:
+      POSTGRES_DB: wsd_tasks
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: wsd_redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: wsd_backend
+    depends_on:
+      - db
+      - redis
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: base64:auzZ6l7OcOUBjdPdnjtaQb2cL+g9Ib/woTCfd0lK4I0=
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: wsd_tasks
+      DB_USERNAME: postgres
+      DB_PASSWORD: 123456
+      CACHE_STORE: redis
+      REDIS_CLIENT: predis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SESSION_DRIVER: file
+      QUEUE_CONNECTION: sync
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ./frontend
+    container_name: wsd_web
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data:

@@ -5,14 +5,20 @@ namespace App\Http\Controllers\Api;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class TaskController
 {
     public function index(): JsonResponse
     {
+        $tasks = Cache::remember('tasks.index', 60, function () {
+            return Task::all();
+        });
+
         return response()->json([
             'success' => true,
-            'data' => Task::all(),
+            'cached_key' => 'tasks.index',
+            'data' => $tasks,
         ], 200);
     }
 
@@ -26,6 +32,8 @@ class TaskController
         ]);
 
         $task = Task::create($validated);
+
+        Cache::forget('tasks.index');
 
         return response()->json([
             'success' => true,
@@ -57,6 +65,8 @@ class TaskController
 
         $task->update($validated);
 
+        Cache::forget('tasks.index');
+
         return response()->json([
             'success' => true,
             'message' => 'Task updated successfully',
@@ -68,6 +78,8 @@ class TaskController
     {
         $task = Task::findOrFail($id);
         $task->delete();
+
+        Cache::forget('tasks.index');
 
         return response()->json(null, 204);
     }
