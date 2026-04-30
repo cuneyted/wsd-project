@@ -1,9 +1,10 @@
-## API Version
-Current version: /api/78745/v1
+## URL Shortener Module
+The project now includes a simple URL shortener module.
 
-## Status codes
-200 OK – successful read  
-201 Created – resource created  
-204 No Content – deleted  
-404 Not Found – missing resource  
-422 Unprocessable Entity – validation error
+Current endpoints:
+POST /api/78745/v1/short-links
+GET /api/78745/v1/short-links
+GET /api/78745/v1/short-links/{id}
+GET /r/{code}
+
+The module uses PostgreSQL for persistent storage, Redis for caching the list endpoint, and Base62 encoding for generating short codes from numeric database IDs.
