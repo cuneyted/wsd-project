@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\FeedController;
+use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\PhotoController;
 use App\Http\Controllers\Api\RestaurantController;
@@ -20,4 +22,8 @@ Route::prefix('78745/v1')->group(function () {
     Route::post('photos', [PhotoController::class, 'store']);
     Route::get('photos/{photo}', [PhotoController::class, 'show']);
     Route::delete('photos/{photo}', [PhotoController::class, 'destroy']);
+
+    Route::post('users/{id}/follow', [FollowController::class, 'follow']);
+    Route::delete('users/{id}/follow', [FollowController::class, 'unfollow']);
+    Route::get('feed', [FeedController::class, 'index']);
 });
