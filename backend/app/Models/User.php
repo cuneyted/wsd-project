@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -34,7 +36,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function following()
+    public function following(): BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
@@ -44,7 +46,7 @@ class User extends Authenticatable
         );
     }
 
-    public function followers()
+    public function followers(): BelongsToMany
     {
         return $this->belongsToMany(
             User::class,
@@ -52,6 +54,16 @@ class User extends Authenticatable
             'followed_id',
             'follower_id'
         );
+    }
+
+    public function watchHistories(): HasMany
+    {
+        return $this->hasMany(WatchHistory::class);
+    }
+
+    public function watchlists(): HasMany
+    {
+        return $this->hasMany(Watchlist::class);
     }
 
     /**
