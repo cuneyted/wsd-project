@@ -11,15 +11,32 @@
     </aside>
 
     <main class="content">
-      <h1>News Feed</h1>
+      <div class="topbar">
+        <h1>News Feed</h1>
+        <button class="primary" @click="refreshFeed">Refresh</button>
+      </div>
 
-      <div class="feed-item">Photo uploaded successfully</div>
-      <div class="feed-item">New task created</div>
-      <div class="feed-item">New recommendation available</div>
-      <div class="feed-item">Watchlist updated</div>
+      <div class="feed-item" v-for="item in feedItems" :key="item">
+        {{ item }}
+      </div>
     </main>
   </div>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+
+const feedItems = ref([
+  'Photo uploaded successfully',
+  'New task created',
+  'New recommendation available',
+  'Watchlist updated',
+])
+
+function refreshFeed() {
+  feedItems.value.unshift(`Feed refreshed at ${new Date().toLocaleTimeString()}`)
+}
+</script>
 
 <style scoped>
 .layout { display:flex; min-height:100vh; font-family:Arial,sans-serif; }
@@ -27,5 +44,7 @@
 .sidebar a { text-decoration:none; color:#111827; padding:8px; border-radius:6px; }
 .sidebar a.router-link-active { background:#dbeafe; color:#2563eb; }
 .content { flex:1; padding:30px; background:#f7f8fa; }
+.topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.primary { background:#2563eb; color:white; border:none; padding:12px 20px; border-radius:8px; cursor:pointer; }
 .feed-item { background:white; padding:20px; border-radius:12px; margin-bottom:16px; box-shadow:0 4px 12px rgba(0,0,0,0.06); }
 </style>

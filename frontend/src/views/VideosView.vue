@@ -12,16 +12,34 @@
 
     <main class="content">
       <h1>Video Catalog</h1>
-      <input class="search" placeholder="Search videos..." />
+      <input class="search" v-model="search" placeholder="Search videos..." />
 
       <div class="grid">
-        <div class="video-card">Introduction to UI/UX</div>
-        <div class="video-card">Wireframing Basics</div>
-        <div class="video-card">Design Systems 101</div>
+        <div class="video-card" v-for="video in filteredVideos" :key="video">
+          {{ video }}
+        </div>
       </div>
     </main>
   </div>
 </template>
+
+<script setup>
+import { computed, ref } from 'vue'
+
+const search = ref('')
+
+const videos = ref([
+  'Introduction to UI/UX',
+  'Wireframing Basics',
+  'Design Systems 101',
+])
+
+const filteredVideos = computed(() =>
+  videos.value.filter(video =>
+    video.toLowerCase().includes(search.value.toLowerCase())
+  )
+)
+</script>
 
 <style scoped>
 .layout { display:flex; min-height:100vh; font-family:Arial,sans-serif; }
@@ -30,6 +48,6 @@
 .sidebar a.router-link-active { background:#dbeafe; color:#2563eb; }
 .content { flex:1; padding:30px; background:#f7f8fa; }
 .search { width:320px; padding:12px; border-radius:8px; border:1px solid #d1d5db; margin:16px 0 24px; }
-.grid { display:flex; gap:20px; }
+.grid { display:flex; gap:20px; flex-wrap:wrap; }
 .video-card { background:white; padding:40px 20px; border-radius:12px; width:180px; box-shadow:0 4px 12px rgba(0,0,0,0.06); }
 </style>
